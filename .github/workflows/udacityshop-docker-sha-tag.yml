@@ -1,0 +1,79 @@
+name: Uda'CityShop [sha tag] - Package with Docker
+on:
+  push:
+    branches:
+      - 'main'
+      - 'master'
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/adservice1
+            ${{ secrets.DOCKERHUB_USERNAME }}/frontend1
+            ${{ secrets.DOCKERHUB_USERNAME }}/productcatalogservice1
+            ${{ secrets.DOCKERHUB_USERNAME }}/currencyservice1
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=sha
+
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push - adservice
+        uses: docker/build-push-action@v2
+        with:
+          context: src/adservice
+          file: src/adservice/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      -
+        name: Build and push - frontend
+        uses: docker/build-push-action@v2
+        with:
+          context: src/frontend
+          file: src/frontend/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      -
+        name: Build and push - productcatalogservice
+        uses: docker/build-push-action@v2
+        with:
+          context: src/productcatalogservice
+          file: src/productcatalogservice/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      -
+        name: Build and push - currencyservice
+        uses: docker/build-push-action@v2
+        with:
+          context: src/currencyservice
+          file: src/currencyservice/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
