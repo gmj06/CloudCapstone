@@ -16,7 +16,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gmj06/productcatalogservice1:sha-db68fef
+        image: gmj06/productcatalogservice1:sha-b8dfa21
         ports:
         - containerPort: 3550
         env:
