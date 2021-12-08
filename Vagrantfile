@@ -9,6 +9,7 @@ Vagrant.configure("2") do |config|
   # st the static IP for the vagrant box
   config.vm.network "private_network", ip: "192.168.56.101"
   config.vm.network "forwarded_port", guest: 6443, host: 6443 # API Access
+  config.vm.network "forwarded_port", guest: 3000, host: 3000 # API Access
 
 
   # consifure the parameters for VirtualBox provider
