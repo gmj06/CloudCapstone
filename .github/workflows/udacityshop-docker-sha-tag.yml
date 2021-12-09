@@ -13,21 +13,7 @@ jobs:
         name: Checkout
         uses: actions/checkout@v2
 
-      -
-        name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          # list of Docker images to use as base name for tags
-          images: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/adservice1
-            ${{ secrets.DOCKERHUB_USERNAME }}/frontend1
-            ${{ secrets.DOCKERHUB_USERNAME }}/productcatalogservice1
-            ${{ secrets.DOCKERHUB_USERNAME }}/currencyservice1
-          # generate Docker tags based on the following events/attributes
-          tags: |
-            type=sha
-
+      
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -40,6 +26,16 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      -
+        name: Docker meta
+        id: meta-adservice
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/adservice1
+          tags: |
+            type=sha
       -
         name: Build and push - adservice
         uses: docker/build-push-action@v2
@@ -47,8 +43,19 @@ jobs:
           context: src/adservice
           file: src/adservice/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-adservice.outputs.tags }}
+          labels: ${{ steps.meta-adservice.outputs.labels }}
+
+      -
+        name: Docker meta
+        id: meta-frontend
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/frontend1
+          tags: |
+            type=sha
+
       -
         name: Build and push - frontend
         uses: docker/build-push-action@v2
@@ -56,8 +63,19 @@ jobs:
           context: src/frontend
           file: src/frontend/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+          labels: ${{ steps.meta-frontend.outputs.labels }}
+
+      -
+        name: Docker meta
+        id: meta-productcatalogservice
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/productcatalogservice1
+          tags: |
+            type=sha
+
       -
         name: Build and push - productcatalogservice
         uses: docker/build-push-action@v2
@@ -65,8 +83,19 @@ jobs:
           context: src/productcatalogservice
           file: src/productcatalogservice/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-productcatalogservice.outputs.tags }}
+          labels: ${{ steps.meta-productcatalogservice.outputs.labels }}
+
+      -
+        name: Docker meta
+        id: meta-currencyservice
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/currencyservice1
+          tags: |
+            type=sha
+
       -
         name: Build and push - currencyservice
         uses: docker/build-push-action@v2
@@ -74,6 +103,6 @@ jobs:
           context: src/currencyservice
           file: src/currencyservice/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-currencyservice.outputs.tags }}
+          labels: ${{ steps.meta-currencyservice.outputs.labels }}
 
