@@ -15,7 +15,7 @@ spec:
       serviceAccountName: default
       containers:
         - name: server
-          image: gmj06/frontend1:sha-d824169
+          image: gmj06/frontend1:sha-fafba44
           ports:
           - containerPort: 8080
           readinessProbe:
